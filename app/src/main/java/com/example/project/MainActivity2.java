@@ -21,15 +21,38 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivity2 extends AppCompatActivity {
     private List<Boolean> dataEntry18 = new ArrayList<>();
+
+    private TextView t2;
+    private TextView t5;
+    private Button btn1;
+    private Button btn2;
+    private Button btn3;
+    private Button btn4;
+    private Button btn5;
+    private Button btn6;
+    private Button btn7;
+    private Button btn8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        new MainActivity2.FetchDataTask().execute("https://api.thingspeak.com/channels/776926/feeds.json?results=2");
+
+        t2 = findViewById(R.id.t2);
+        t5 = findViewById(R.id.t5);
+        btn1 = findViewById(R.id.b1);
+        btn2 = findViewById(R.id.b2);
+        btn3 = findViewById(R.id.b3);
+        btn4 = findViewById(R.id.b4);
+        btn5 = findViewById(R.id.b5);
+        btn6 = findViewById(R.id.b6);
+        btn7 = findViewById(R.id.b7);
+        btn8 = findViewById(R.id.b8);
+
+        new FetchDataTask().execute("https://api.thingspeak.com/channels/2284744/feeds.json?results=2");
+
         Button btn9 = findViewById(R.id.b9);
         btn9.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,19 +62,9 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
     }
+
     private class FetchDataTask extends AsyncTask<String, Void, String> {
         int trueCount18 = 0;
-        TextView t2 = findViewById(R.id.t2);
-        TextView t5 = findViewById(R.id.t5);
-        Button btn1 = findViewById(R.id.b1);
-        Button btn2 = findViewById(R.id.b2);
-        Button btn3 = findViewById(R.id.b3);
-        Button btn4 = findViewById(R.id.b4);
-        Button btn5 = findViewById(R.id.b5);
-        Button btn6 = findViewById(R.id.b6);
-        Button btn7 = findViewById(R.id.b7);
-        Button btn8 = findViewById(R.id.b8);
-
 
         @Override
         protected String doInBackground(String... urls) {
@@ -82,27 +95,25 @@ public class MainActivity2 extends AppCompatActivity {
                     for (int i = 0; i < feeds.length(); i++) {
 
                         JSONObject feed = feeds.getJSONObject(i);
-
                         int entryId = feed.getInt("entry_id");
-
                         if (entryId == lastEntryId) {
-                            String field1Value = feed.isNull("field1")?null : feed.getString("field1");
-                            String field2Value = feed.isNull("field2")?null : feed.getString("field2");
-                            String field3Value = feed.isNull("field3")?null : feed.getString("field3");
-                            String field4Value = feed.isNull("field4")?null : feed.getString("field4");
-                            String field5Value = feed.isNull("field5")?null : feed.getString("field5");
-                            String field6Value = feed.isNull("field6")?null : feed.getString("field6");
-                            String field7Value = feed.isNull("field7")?null : feed.getString("field7");
-                            String field8Value = feed.isNull("field8")?null : feed.getString("field8");
+                            String[] fields = new String[8];
+                            fields[0] = feed.isNull("field1") ? null : feed.getString("field1");
+                            fields[1] = feed.isNull("field2") ? null : feed.getString("field2");
+                            fields[2] = feed.isNull("field3") ? null : feed.getString("field3");
+                            fields[3] = feed.isNull("field4") ? null : feed.getString("field4");
+                            fields[4] = feed.isNull("field5") ? null : feed.getString("field5");
+                            fields[5] = feed.isNull("field6") ? null : feed.getString("field6");
+                            fields[6] = feed.isNull("field7") ? null : feed.getString("field7");
+                            fields[7] = feed.isNull("field8") ? null : feed.getString("field8");
 
-                            dataEntry18.add(field1Value!= null && !field1Value.equals("0"));
-                            dataEntry18.add(field2Value!= null && !field2Value.equals("0"));
-                            dataEntry18.add(field3Value!= null && !field3Value.equals("0"));
-                            dataEntry18.add(field4Value!= null && !field4Value.equals("0"));
-                            dataEntry18.add(field5Value!= null && !field5Value.equals("0"));
-                            dataEntry18.add(field6Value!= null && !field6Value.equals("0"));
-                            dataEntry18.add(field7Value!= null && !field7Value.equals("0"));
-                            dataEntry18.add(field8Value!= null && !field8Value.equals("0"));
+                            for (String fieldValue : fields) {
+                                if (fieldValue != null && Double.parseDouble(fieldValue) > 5) {
+                                    dataEntry18.add(true);
+                                } else {
+                                    dataEntry18.add(false);
+                                }
+                            }
                         }
                     }
 
@@ -127,6 +138,7 @@ public class MainActivity2 extends AppCompatActivity {
                 }
             }
         }
+
         private void setButtonColor() {
             List<Button> buttons = new ArrayList<>();
             buttons.add(btn1);

@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.d("MainActivity", "onCreate() executed");
 
-        new FetchDataTask().execute("https://api.thingspeak.com/channels/2284744/feeds.json?api_key=2I4C33CCQTWWGEL0&results=2");
+        new FetchDataTask().execute("https://api.thingspeak.com/channels/776926/feeds.json?results=2");
         Button btn9 = findViewById(R.id.button9);
         btn9.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,26 +87,24 @@ public class MainActivity extends AppCompatActivity {
 
                         JSONObject feed = feeds.getJSONObject(i);
                         int entryId = feed.getInt("entry_id");
-
                         if (entryId == lastEntryId) {
-                            String field1Value = feed.isNull("field1")?null : feed.getString("field1");
-                            String field2Value = feed.isNull("field2")?null : feed.getString("field2");
-                            String field3Value = feed.isNull("field3")?null : feed.getString("field3");
-                            String field4Value = feed.isNull("field4")?null : feed.getString("field4");
-                            String field5Value = feed.isNull("field5")?null : feed.getString("field5");
-                            String field6Value = feed.isNull("field6")?null : feed.getString("field6");
-                            String field7Value = feed.isNull("field7")?null : feed.getString("field7");
-                            String field8Value = feed.isNull("field8")?null : feed.getString("field8");
+                            String[] fields = new String[8];
+                            fields[0] = feed.isNull("field1") ? null : feed.getString("field1");
+                            fields[1] = feed.isNull("field2") ? null : feed.getString("field2");
+                            fields[2] = feed.isNull("field3") ? null : feed.getString("field3");
+                            fields[3] = feed.isNull("field4") ? null : feed.getString("field4");
+                            fields[4] = feed.isNull("field5") ? null : feed.getString("field5");
+                            fields[5] = feed.isNull("field6") ? null : feed.getString("field6");
+                            fields[6] = feed.isNull("field7") ? null : feed.getString("field7");
+                            fields[7] = feed.isNull("field8") ? null : feed.getString("field8");
 
-
-                            dataEntry17.add(field1Value!= null && !field1Value.equals("0"));
-                            dataEntry17.add(field2Value!= null && !field2Value.equals("0"));
-                            dataEntry17.add(field3Value!= null && !field3Value.equals("0"));
-                            dataEntry17.add(field4Value!= null && !field4Value.equals("0"));
-                            dataEntry17.add(field5Value!= null && !field5Value.equals("0"));
-                            dataEntry17.add(field6Value!= null && !field6Value.equals("0"));
-                            dataEntry17.add(field7Value!= null && !field7Value.equals("0"));
-                            dataEntry17.add(field8Value!= null && !field8Value.equals("0"));
+                            for (String fieldValue : fields) {
+                                if (fieldValue != null && Double.parseDouble(fieldValue) > 10) {
+                                    dataEntry17.add(true);
+                                } else {
+                                    dataEntry17.add(false);
+                                }
+                            }
                         }
                     }
 
