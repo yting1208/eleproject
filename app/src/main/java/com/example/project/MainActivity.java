@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Boolean> dataEntry17 = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private class FetchDataTask extends AsyncTask<String, Void, String> {
         int trueCount17 = 0;
         TextView textView2 = findViewById(R.id.textView2);
+        TextView textView4 = findViewById(R.id.textView4);
 
         Button btn1 = findViewById(R.id.button1);
         Button btn2 = findViewById(R.id.button2);
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         Button btn6 = findViewById(R.id.button6);
         Button btn7 = findViewById(R.id.button7);
         Button btn8 = findViewById(R.id.button8);
-
 
         @Override
         protected String doInBackground(String... urls) {
@@ -74,39 +73,47 @@ public class MainActivity extends AppCompatActivity {
 
             if (result != null) {
                 try {
+
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray feeds = jsonObject.getJSONArray("feeds");
+                    JSONObject channel = jsonObject.getJSONObject("channel");
+
+                    int lastEntryId = channel.getInt("last_entry_id");
+
+                    Log.d("Fetch111111", "現在ID：" + lastEntryId);
                     dataEntry17.clear();
 
                     for (int i = 0; i < feeds.length(); i++) {
+
                         JSONObject feed = feeds.getJSONObject(i);
+                        int entryId = feed.getInt("entry_id");
 
-                        boolean field1Value = feed.has("field1") && !feed.isNull("field1") && !feed.getString("field1").equals("0");
-                        boolean field2Value = feed.has("field2") && !feed.isNull("field2") && !feed.getString("field2").equals("0");
-                        boolean field3Value = feed.has("field3") && !feed.isNull("field3") && !feed.getString("field3").equals("0");
-                        boolean field4Value = feed.has("field4") && !feed.isNull("field4") && !feed.getString("field4").equals("0");
-                        boolean field5Value = feed.has("field5") && !feed.isNull("field5") && !feed.getString("field5").equals("0");
-                        boolean field6Value = feed.has("field6") && !feed.isNull("field6") && !feed.getString("field6").equals("0");
-                        boolean field7Value = feed.has("field7") && !feed.isNull("field7") && !feed.getString("field7").equals("0");
-                        boolean field8Value = feed.has("field8") && !feed.isNull("field8") && !feed.getString("field8").equals("0");
+                        if (entryId == lastEntryId) {
+                            String field1Value = feed.isNull("field1")?null : feed.getString("field1");
+                            String field2Value = feed.isNull("field2")?null : feed.getString("field2");
+                            String field3Value = feed.isNull("field3")?null : feed.getString("field3");
+                            String field4Value = feed.isNull("field4")?null : feed.getString("field4");
+                            String field5Value = feed.isNull("field5")?null : feed.getString("field5");
+                            String field6Value = feed.isNull("field6")?null : feed.getString("field6");
+                            String field7Value = feed.isNull("field7")?null : feed.getString("field7");
+                            String field8Value = feed.isNull("field8")?null : feed.getString("field8");
 
-                        if (feed.getInt("entry_id") == 17) {
-                            dataEntry17.add(field1Value);
-                            dataEntry17.add(field2Value);
-                            dataEntry17.add(field3Value);
-                            dataEntry17.add(field4Value);
-                            dataEntry17.add(field5Value);
-                            dataEntry17.add(field6Value);
-                            dataEntry17.add(field7Value);
-                            dataEntry17.add(field8Value);
+
+                            dataEntry17.add(field1Value!= null && !field1Value.equals("0"));
+                            dataEntry17.add(field2Value!= null && !field2Value.equals("0"));
+                            dataEntry17.add(field3Value!= null && !field3Value.equals("0"));
+                            dataEntry17.add(field4Value!= null && !field4Value.equals("0"));
+                            dataEntry17.add(field5Value!= null && !field5Value.equals("0"));
+                            dataEntry17.add(field6Value!= null && !field6Value.equals("0"));
+                            dataEntry17.add(field7Value!= null && !field7Value.equals("0"));
+                            dataEntry17.add(field8Value!= null && !field8Value.equals("0"));
                         }
                     }
 
                     System.out.println("Data Entry 17:");
                     for (boolean value : dataEntry17) {
-                        System.out.println("\n"+value+"BBAA155555");
+                        System.out.println("\n" + value + "BBAA155555");
                     }
-
 
                     for (boolean value : dataEntry17) {
                         if (value) {
@@ -116,14 +123,14 @@ public class MainActivity extends AppCompatActivity {
 
                     textView2.setText(String.valueOf(trueCount17));
 
+                    textView4.setText(String.valueOf((dataEntry17))); //此行顯示布林值
+
                     setButtonColor();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
-
         }
 
         private void setButtonColor() {

@@ -29,7 +29,7 @@ public class MainActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        new MainActivity2.FetchDataTask().execute("https://api.thingspeak.com/channels/2284744/feeds.json?api_key=2I4C33CCQTWWGEL0&results=2");
+        new MainActivity2.FetchDataTask().execute("https://api.thingspeak.com/channels/776926/feeds.json?results=2");
         Button btn9 = findViewById(R.id.b9);
         btn9.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +42,7 @@ public class MainActivity2 extends AppCompatActivity {
     private class FetchDataTask extends AsyncTask<String, Void, String> {
         int trueCount18 = 0;
         TextView t2 = findViewById(R.id.t2);
-
+        TextView t5 = findViewById(R.id.t5);
         Button btn1 = findViewById(R.id.b1);
         Button btn2 = findViewById(R.id.b2);
         Button btn3 = findViewById(R.id.b3);
@@ -69,37 +69,46 @@ public class MainActivity2 extends AppCompatActivity {
 
             if (result != null) {
                 try {
+
                     JSONObject jsonObject = new JSONObject(result);
                     JSONArray feeds = jsonObject.getJSONArray("feeds");
+                    JSONObject channel = jsonObject.getJSONObject("channel");
+
+                    int lastEntryId = channel.getInt("last_entry_id");
+
+                    Log.d("Fetch111111", "現在ID：" + lastEntryId);
                     dataEntry18.clear();
 
                     for (int i = 0; i < feeds.length(); i++) {
+
                         JSONObject feed = feeds.getJSONObject(i);
 
-                        boolean field1Value = feed.has("field1") && !feed.isNull("field1") && !feed.getString("field1").equals("0");
-                        boolean field2Value = feed.has("field2") && !feed.isNull("field2") && !feed.getString("field2").equals("0");
-                        boolean field3Value = feed.has("field3") && !feed.isNull("field3") && !feed.getString("field3").equals("0");
-                        boolean field4Value = feed.has("field4") && !feed.isNull("field4") && !feed.getString("field4").equals("0");
-                        boolean field5Value = feed.has("field5") && !feed.isNull("field5") && !feed.getString("field5").equals("0");
-                        boolean field6Value = feed.has("field6") && !feed.isNull("field6") && !feed.getString("field6").equals("0");
-                        boolean field7Value = feed.has("field7") && !feed.isNull("field7") && !feed.getString("field7").equals("0");
-                        boolean field8Value = feed.has("field8") && !feed.isNull("field8") && !feed.getString("field8").equals("0");
+                        int entryId = feed.getInt("entry_id");
 
-                        if (feed.getInt("entry_id") == 18) {
-                            dataEntry18.add(field1Value);
-                            dataEntry18.add(field2Value);
-                            dataEntry18.add(field3Value);
-                            dataEntry18.add(field4Value);
-                            dataEntry18.add(field5Value);
-                            dataEntry18.add(field6Value);
-                            dataEntry18.add(field7Value);
-                            dataEntry18.add(field8Value);
+                        if (entryId == lastEntryId) {
+                            String field1Value = feed.isNull("field1")?null : feed.getString("field1");
+                            String field2Value = feed.isNull("field2")?null : feed.getString("field2");
+                            String field3Value = feed.isNull("field3")?null : feed.getString("field3");
+                            String field4Value = feed.isNull("field4")?null : feed.getString("field4");
+                            String field5Value = feed.isNull("field5")?null : feed.getString("field5");
+                            String field6Value = feed.isNull("field6")?null : feed.getString("field6");
+                            String field7Value = feed.isNull("field7")?null : feed.getString("field7");
+                            String field8Value = feed.isNull("field8")?null : feed.getString("field8");
+
+                            dataEntry18.add(field1Value!= null && !field1Value.equals("0"));
+                            dataEntry18.add(field2Value!= null && !field2Value.equals("0"));
+                            dataEntry18.add(field3Value!= null && !field3Value.equals("0"));
+                            dataEntry18.add(field4Value!= null && !field4Value.equals("0"));
+                            dataEntry18.add(field5Value!= null && !field5Value.equals("0"));
+                            dataEntry18.add(field6Value!= null && !field6Value.equals("0"));
+                            dataEntry18.add(field7Value!= null && !field7Value.equals("0"));
+                            dataEntry18.add(field8Value!= null && !field8Value.equals("0"));
                         }
                     }
 
-                    System.out.println("Data Entry 18:");
+                    System.out.println("Data Entry 17:");
                     for (boolean value : dataEntry18) {
-                        System.out.println("\n"+value+"AACC123");
+                        System.out.println("\n" + value + "BBAA155555");
                     }
 
                     for (boolean value : dataEntry18) {
@@ -109,17 +118,15 @@ public class MainActivity2 extends AppCompatActivity {
                     }
 
                     t2.setText(String.valueOf(trueCount18));
+                    t5.setText((String.valueOf(dataEntry18)));
 
                     setButtonColor();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
-
         }
-
         private void setButtonColor() {
             List<Button> buttons = new ArrayList<>();
             buttons.add(btn1);
